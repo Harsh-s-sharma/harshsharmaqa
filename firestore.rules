@@ -1,0 +1,59 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Function to check if user is an admin
+    function isAdmin() {
+      // Check if the user is authenticated and if their user document shows they are an admin.
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Rules for blogs
+    match /blogs/{blogId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Rules for pages
+    match /pages/{pageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // Rules for settings
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Rules for testimonials
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Rules for courses and their subcollections
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if isAdmin();
+
+      // Allow anyone to enroll in a course, but only admins can see/manage enrollments
+      match /enrollments/{enrollmentId} {
+        allow create: if true;
+        allow read, update, delete: if isAdmin();
+      }
+    }
+
+    // Rules for user documents
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      // Allow users to create their own document upon signup
+      allow create: if request.auth.uid == userId;
+      // Allow users to update their own document
+      allow update: if request.auth.uid == userId;
+      // Only admins can delete user documents
+      allow delete: if isAdmin();
+    }
+  }
+}
