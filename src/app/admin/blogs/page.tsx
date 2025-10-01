@@ -52,6 +52,8 @@ export type BlogPost = {
   author: string;
   category: string;
   seoDescription: string;
+  seoTitle?: string;
+  content?: string;
   featureImageUrl?: string;
   createdAt: Timestamp;
   faqs?: { question: string; answer: string }[];

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { ContentParaphraser } from '@/components/admin/content-paraphraser';
 
 export default function ContentPage() {
@@ -8,3 +10,4 @@ export default function ContentPage() {
     </div>
   );
 }
+

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { KeywordRankTracker } from '@/components/admin/keyword-rank-tracker';
 import { SeoAuditTool } from '@/components/admin/seo-audit-tool';
 

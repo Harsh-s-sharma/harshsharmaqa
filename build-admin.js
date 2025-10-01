@@ -1,8 +1,9 @@
+const { execSync } = require('child_process');
+const fs = require('fs');
 
-import type {NextConfig} from 'next';
-
-const nextConfig: NextConfig = {
-  /* config options here */
+// Create a temporary next.config.js that handles admin pages
+const tempConfig = `
+const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -31,7 +32,7 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https' ,
+        protocol: 'https',
         hostname: 'firebasestorage.googleapis.com',
         port: '',
         pathname: '/**',
@@ -44,11 +45,26 @@ const nextConfig: NextConfig = {
       }
     ],
   },
-  // devIndicators: {
-  //   allowedDevOrigins: [
-  //     'https://*.cloudworkstations.dev',
-  //   ]
-  // }
+  experimental: {
+    serverComponentsExternalPackages: ['firebase'],
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
+`;
+
+fs.writeFileSync('next.config.temp.js', tempConfig);
+
+try {
+  // Run the build with the temporary config
+  execSync('npx next build', { stdio: 'inherit' });
+  console.log('Build completed successfully!');
+} catch (error) {
+  console.error('Build failed:', error.message);
+  process.exit(1);
+} finally {
+  // Clean up the temporary config file
+  if (fs.existsSync('next.config.temp.js')) {
+    fs.unlinkSync('next.config.temp.js');
+  }
+}

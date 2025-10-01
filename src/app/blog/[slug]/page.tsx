@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import type { Metadata } from 'next';
 import { type BlogPost } from '@/app/admin/blogs/page';
-import loading from './loading';
+// import loading from './loading';
 import {
   Accordion,
   AccordionContent,
@@ -59,10 +59,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     };
   }
   return {
-    title: post.seoTitle,
+    title: post.title,
     description: post.seoDescription,
     openGraph: {
-      title: post.seoTitle,
+      title: post.title,
       description: post.seoDescription,
       images: [
         {
@@ -143,7 +143,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           </div>
           <article 
             className="prose prose-lg dark:prose-invert mx-auto"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: post.content || '<p>No content available.</p>' }}
           >
           </article>
 

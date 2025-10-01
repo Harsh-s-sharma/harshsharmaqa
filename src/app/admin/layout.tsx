@@ -9,13 +9,15 @@ import { useRouter } from 'next/navigation';
 import { app } from '@/lib/firebase';
 import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import AdminSidebar from '@/components/admin/admin-sidebar';
+import { AdminErrorBoundary } from '@/components/admin/error-boundary';
 import { Loader2 } from 'lucide-react';
+
+export const dynamic = 'force-dynamic';
 
 const ADMIN_EMAIL = 'harshsharmaqa@gmail.com';
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   const [authInstance, setAuthInstance] = useState<ReturnType<typeof getAuth> | null>(null);
-  const [user, loading] = useAuthState(auth);
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isChecking, setIsChecking] = useState(true);
@@ -26,7 +28,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     setAuthInstance(authOnClient);
   }, []);
 
-  const auth = authInstance as ReturnType<typeof getAuth> | undefined as any;
+  const [user, loading] = useAuthState(authInstance as any);
 
   useEffect(() => {
     if (loading) {
@@ -71,13 +73,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   // If the user is an admin, render the admin layout.
   return (
-    <SidebarProvider>
-      <AdminSidebar />
-      <SidebarInset>
-        <div className="p-4 sm:p-6 lg:p-8 bg-background min-h-screen">
-          {children}
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+    <AdminErrorBoundary>
+      <SidebarProvider>
+        <AdminSidebar />
+        <SidebarInset>
+          <div className="p-4 sm:p-6 lg:p-8 bg-background min-h-screen">
+            {children}
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
+    </AdminErrorBoundary>
   );
 }

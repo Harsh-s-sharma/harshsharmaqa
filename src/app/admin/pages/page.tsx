@@ -1,6 +1,8 @@
 
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { collection, onSnapshot, deleteDoc, doc, orderBy, query, Timestamp } from 'firebase/firestore';
@@ -169,3 +171,4 @@ export default function AdminPagesPage() {
     </div>
   );
 }
+

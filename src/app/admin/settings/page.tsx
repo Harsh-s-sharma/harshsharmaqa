@@ -1,7 +1,10 @@
 
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useForm, Controller } from 'react-hook-form';
+import dynamic from 'next/dynamic';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -61,10 +64,14 @@ export default function AdminSettingsPage() {
 
   useEffect(() => {
     const fetchSettings = async () => {
-      const docRef = doc(db, 'settings', 'site');
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        form.reset(docSnap.data() as SettingsFormValues);
+      try {
+        const docRef = doc(db, 'settings', 'site');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          form.reset(docSnap.data() as SettingsFormValues);
+        }
+      } catch (error) {
+        console.error('Error fetching settings:', error);
       }
     };
     fetchSettings();
