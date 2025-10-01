@@ -1,6 +1,7 @@
 [build]
   publish = ".next"
   command = "npm run build:production"
+  ignore_command = "echo 'Build not ignored'"
 
 [build.environment]
   NODE_VERSION = "20.19.5"
